@@ -118,7 +118,8 @@ class OpenAIFileMemoryModel(AIModel):
         messages: List[dict] = None,
     ):
         response =  self.retriever.get_answers(question=f"${system_persona} ${prompt}")
-        return response
+        text_response = response[0][0].text.value
+        return text_response
 
     def generate_image(
         self, task_id: str, prompt: str, resource_box: ResourceBox

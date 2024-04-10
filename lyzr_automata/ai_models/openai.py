@@ -21,8 +21,9 @@ class OpenAIModel(AIModel):
     ):
         # task_id kept for future use
         if messages is None:
+            if system_persona is not None:
+                messages.append({"role": "system", "content": system_persona})
             messages = [
-                {"role": "system", "content": system_persona},
                 {"role": "user", "content": prompt},
             ]
 

@@ -3,10 +3,11 @@ import os
 import time
 from typing import Dict, Any, List, Optional
 
-from fastapi.responses import FileResponse
+
 from openai import OpenAI
 
 from lyzr_automata.ai_models.model_base import AIModel
+from lyzr_automata.data_models import FileResponse
 from lyzr_automata.memory.memory_literals import MemoryProvider
 from lyzr_automata.utils.resource_handler import ResourceBox
 

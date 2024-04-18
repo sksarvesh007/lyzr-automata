@@ -43,9 +43,9 @@ class QueryRouter:
         self.tools = tools if tools is not None else []
         self.router_type = router_type
 
-    def route(self, query):
-        if self.router_type == RoutingType.FUNCTION:
-            return self.function_router(query=query)
+    def route(self, query, use_llm=True):
+            if self.router_type == RoutingType.FUNCTION:
+                return self.function_router(query=query,use_llm=use_llm)
 
     def _generate_fn_router_prompt(self, function_meta_map, query):
         function_meta_list = list(function_meta_map.values())
@@ -112,11 +112,22 @@ class QueryRouter:
         )
         return prompt
 
-    def function_router(self, query):
-        prompt = str(
-            self._generate_fn_router_prompt(
-                function_meta_map=self.function_meta_map, query=query
+    def function_router(self, query, use_llm):
+        if use_llm:
+            prompt = str(
+                self._generate_fn_router_prompt(
+                    function_meta_map=self.function_meta_map, query=query
+                )
             )
-        )
-        fn_key_name = self.model.generate_text(prompt=prompt)
-        return self.function_meta_map[capture_text(fn_key_name)]["function"]
+            fn_key_name = self.model.generate_text(prompt=prompt)
+            return self.function_meta_map[capture_text(fn_key_name)]["function"]
+        else:
+            for name, meta in self.function_meta_map.items():
+                if name in query:
+                    return meta["function"]
+
+            for name, meta in self.function_meta_map.items():
+                pattern = re.compile(name, re.IGNORECASE)
+                if pattern.search(query):
+                    return meta["function"]
+        return None

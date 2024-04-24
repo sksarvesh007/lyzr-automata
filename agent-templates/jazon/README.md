@@ -1,25 +1,25 @@
 
 # **Jazon - World’s First Downloadable AI SDR**
 
-#### Jazon is built on Lyzr Automata, a multi-agent automation framework that allows anyone to build reliable enterprise-grade meta-agents. Jazon performs all functions of an SDR. You can build any meta-agent similar to Jazon using the Lyzr Automata framework.
+##### Jazon is built on Lyzr Automata, a multi-agent automation framework that allows anyone to build reliable enterprise-grade meta-agents. Jazon performs all functions of an SDR. You can build any meta-agent similar to Jazon using the Lyzr Automata framework.
 #
 
 [![Video Title](https://raw.githubusercontent.com/LyzrCore/lyzr-automata/main/agent-templates/jazon/assets/intro_demo_thumbnail.png)](https://www.lyzr.ai/wp-content/uploads/2024/04/LYZR-VIDEO-7.mp4)
 
 ### **Why did we build Jazon?**
 
-#### It all started with a tweet from Jason Lemkin of SaaStr. We took this as a challenge to build a meta-agent on Lyzr Automata. We ended up building a base version in just four days. 
+##### It all started with a tweet from Jason Lemkin of SaaStr. We took this as a challenge to build a meta-agent on Lyzr Automata. We ended up building a base version in just four days. 
 
 #
 ![Jason's tweet](https://raw.githubusercontent.com/LyzrCore/lyzr-automata/main/agent-templates/jazon/assets/jason_tweet.png)
 
 #
 
-### Below is the architecture we designed to solve the above problem statement from Jason Lemkin.
+##### Below is the architecture we designed to solve the above problem statement from Jason Lemkin.
 
 ![architecture](https://raw.githubusercontent.com/LyzrCore/lyzr-automata/main/agent-templates/jazon/assets/arch.png)
 
-### And here is how Jazon works with a placeholder UI built by our team.
+##### And here is how Jazon works with a placeholder UI built by our team.
 
 [![Video Title](https://raw.githubusercontent.com/LyzrCore/lyzr-automata/main/agent-templates/jazon/assets/demo_video_thumbnail.png)](https://www.lyzr.ai/wp-content/uploads/2024/04/WALKTHROUGH.mp4)
 

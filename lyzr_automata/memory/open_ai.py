@@ -13,10 +13,11 @@ from lyzr_automata.utils.resource_handler import ResourceBox
 
 class FileRetrievalAssistant:
     def __init__(
-        self, persist: bool = True, ids_file: str = "assistant_ids.json"
+        self, persist: bool = True, ids_file: str = "assistant_ids.json", file_path: str = ""
     ) -> None:
         self.persist = persist
         self.ids_file = ids_file  # Path to the JSON file where IDs will be saved/loaded
+        self.file_path = file_path
         self.api_key: Optional[str] = os.getenv("OPENAI_API_KEY")
         if self.api_key is None:
             raise ValueError("API Key not found in environment variables")
@@ -27,9 +28,9 @@ class FileRetrievalAssistant:
         if self.persist:
             self.load_ids_from_file()  # Attempt to load IDs from the file on initialization
 
-    def upload_file(self, filename: str, model: str) -> None:
+    def upload_file(self, model: str) -> None:
         if self.file_id is None:
-            with open(filename, "rb") as f:
+            with open(self.file_path, "rb") as f:
                 file = self.client.files.create(file=f, purpose="assistants")
             self.file_id = file.id
             if self.persist:
@@ -50,23 +51,35 @@ class FileRetrievalAssistant:
     def save_ids_to_file(self) -> None:
         """Saves the current IDs to a JSON file."""
         ids = {
-            "assistant_id": self.assistant_id,
-            "file_id": self.file_id,
-            "thread_id": self.thread_id,
+            self.file_path: {
+                "assistant_id": self.assistant_id,
+                "file_id": self.file_id,
+                "thread_id": self.thread_id,
+            }
         }
+        try:
+            with open(self.ids_file, "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = {}
+        
+        data.update(ids)
         with open(self.ids_file, "w") as file:
-            json.dump(ids, file)
+            json.dump(data, file, indent=4)
 
     def load_ids_from_file(self) -> None:
         """Loads the IDs from a JSON file, if it exists."""
         try:
             with open(self.ids_file, "r") as file:
                 ids = json.load(file)
-                self.assistant_id = ids.get("assistant_id")
-                self.file_id = ids.get("file_id")
+                file_ids = ids[self.file_path]
+                self.assistant_id = file_ids.get("assistant_id")
+                self.file_id = file_ids.get("file_id")
                 # The thread_id is not loaded because a new thread is created for each session
         except FileNotFoundError:
             print("No existing IDs file found. Starting from scratch.")
+        except KeyError:
+            print("New file found, creating new memory.")
 
     def get_answers(self, question: str) -> List[str]:
         if self.assistant_id is None:
@@ -107,8 +120,8 @@ class OpenAIFileMemoryModel(AIModel):
         self.model = self.parameters["model"]
         self.file_path = self.parameters["file_path"]
         self.persist = self.parameters["persist"]
-        self.retriever = FileRetrievalAssistant(persist=True)
-        self.retriever.upload_file(self.file_path, model=self.model)
+        self.retriever = FileRetrievalAssistant(persist=True, file_path=self.file_path)
+        self.retriever.upload_file(model=self.model)
 
     def generate_text(
         self,

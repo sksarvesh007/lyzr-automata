@@ -37,12 +37,21 @@ class FileRetrievalAssistant:
                 self.save_ids_to_file()  # Save IDs after creating the file
 
         if self.assistant_id is None:
+            vector_store = self.client.beta.vector_stores.create(
+                name = "Data File",
+                file_ids=[self.file_id]
+            )
+
             assistant = self.client.beta.assistants.create(
                 name="File Helper",
                 instructions="You are my assistant who can answer questions from the given file",
-                tools=[{"type": "retrieval"}],
+                tools=[{"type": "file_search"}],
                 model=model,
-                file_ids=[self.file_id],
+                tool_resources={
+                    "file_search":{
+                        "vector_store_ids":[vector_store.id]
+                    }
+                }
             )
             self.assistant_id = assistant.id
             if self.persist:
